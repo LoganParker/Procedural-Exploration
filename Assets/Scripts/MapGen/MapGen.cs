@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapGen : MonoBehaviour
 {
 
-    public enum DrawMode{NoiseMap,ColorMap}
+    public enum DrawMode{NoiseMap,ColorMap,Mesh}
     [SerializeField]private DrawMode drawMode;
     public bool autoUpdate;
 
@@ -47,6 +47,8 @@ public class MapGen : MonoBehaviour
             display.DrawTexture(TextureGen.TextureFromHeightMap(noiseMap));
         }else if (drawMode == DrawMode.ColorMap){
             display.DrawTexture(TextureGen.TextureFromColorMap(colorMap,mapWidth,mapHeight));
+        }else if(drawMode == DrawMode.Mesh){
+            display.DrawMesh(MeshGen.GenerateTerrainMesh(noiseMap), TextureGen.TextureFromColorMap(colorMap,mapWidth,mapHeight));
         }
         
     }
