@@ -12,7 +12,8 @@ public class MapGen : MonoBehaviour
     //
 
     //Map Parameters
-    const int mapChunkSize = 241;
+    //Mesh is 240x240
+    public const int mapChunkSize = 241;
     [SerializeField][Range(0,6)]int levelOfDetail;
     [SerializeField]private float meshHeightMultiplier;
     [SerializeField]private int seed;
