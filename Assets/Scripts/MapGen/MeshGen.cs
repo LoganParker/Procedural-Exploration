@@ -3,25 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MeshGen{
-    public static MeshData GenerateTerrainMesh(float[,] heightMap){
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier,  AnimationCurve heightCurve, int levelOfDetail){
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
         //For keeping mesh centered
         float topLeftX = (width-1)/-2f;
         float topLeftZ = (height-1)/2f;
 
-        MeshData meshData = new MeshData(width,height);
+        int meshSimplificationIncrement = (levelOfDetail==0)? 1:levelOfDetail*2;
+        int verticesPerLine = (width-1)/ meshSimplificationIncrement+1;
+
+        MeshData meshData = new MeshData(verticesPerLine,verticesPerLine);
         int vertexIndex = 0;
 
 
-        for(int y = 0; y < height; y++){
-            for(int x = 0; x < width; x++){
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x,heightMap[x,y], topLeftZ - y);
+        for(int y = 0; y < height; y += meshSimplificationIncrement){
+            for(int x = 0; x < width; x += meshSimplificationIncrement){
+                
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x,heightCurve.Evaluate(heightMap[x,y])*heightMultiplier, topLeftZ - y);
                 meshData.uvs[vertexIndex] = new Vector2(x/(float)width, y/(float)height);
 
                 if(x < width-1 && y < height-1 ){
-                    meshData.AddTrinagle(vertexIndex,vertexIndex+width+1,vertexIndex+width);
-                    meshData.AddTrinagle(vertexIndex+width+1,vertexIndex,vertexIndex+1);
+                    meshData.AddTrinagle(vertexIndex,vertexIndex+ verticesPerLine+1,vertexIndex+verticesPerLine);
+                    meshData.AddTrinagle(vertexIndex+verticesPerLine+1,vertexIndex,vertexIndex+1);
                 }
 
                 vertexIndex++;
