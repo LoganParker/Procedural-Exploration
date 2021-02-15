@@ -11,6 +11,7 @@ public class MapGen : MonoBehaviour
     [SerializeField]private DrawMode drawMode;
     public bool autoUpdate;
     public AnimationCurve meshHeightCurve;
+    public NoiseGen.NormalizeMode normalizeMode;
     //
 
     //Threading
@@ -38,17 +39,18 @@ public class MapGen : MonoBehaviour
     // MAP GENERATION
     MapData GenerateMapData(Vector2 center){
         // Get noise map
-        float[,] noiseMap = NoiseGen.GenerateNoiseMap(mapChunkSize,mapChunkSize,seed,noiseScale,octaves,persistance,lacunarity,center+offset);
+        float[,] noiseMap = NoiseGen.GenerateNoiseMap(mapChunkSize,mapChunkSize,seed,noiseScale,octaves,persistance,lacunarity,center+offset,normalizeMode);
         
         //Assign Terrain based on height
         Color[] colorMap = new Color[mapChunkSize*mapChunkSize];
         for(int x = 0;x < mapChunkSize; x++){
             for(int y = 0;y < mapChunkSize; y++){
                 float currentHeight = noiseMap[x,y];
-
                 for(int i = 0;i < regions.Length; i++){
-                    if(currentHeight<= regions[i].height){
+                    if(currentHeight >= regions[i].height){
                         colorMap[y*mapChunkSize+x] = regions[i].color;
+                    }
+                    else{
                         break;
                     }
                 }
