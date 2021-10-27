@@ -20,7 +20,7 @@ public class EndlessTerrain : MonoBehaviour
     int chunkSize;
     int chunksVisibleInDist;
     [SerializeField] private Material mapMaterial;
-
+    //
 
     
 
